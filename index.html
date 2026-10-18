@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e12">
+  <meta name="description" content="Pemutar video YouTube responsif dengan mode putar sekali, loop, dan putar ulang manual.">
+  <title>Vidora — Pemutar YouTube</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./youtube-url.js"></script>
+  <script defer src="./playback-controller.js"></script>
+  <script defer src="./youtube-errors.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-left" aria-hidden="true"></div>
+  <div class="ambient ambient-right" aria-hidden="true"></div>
+
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Vidora, kembali ke atas">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M8.5 5.7a1 1 0 0 1 1.5-.86l9 5.2a1 1 0 0 1 0 1.73l-9 5.2a1 1 0 0 1-1.5-.87V5.7Z" fill="currentColor"/></svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">vidora<span class="brand-period">.</span></span>
+          <span class="brand-caption">YOUTUBE PLAYER</span>
+        </span>
+      </a>
+      <div class="topbar-note"><span class="online-indicator" aria-hidden="true"></span> Pemutar resmi YouTube</div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-rule" aria-hidden="true"></span> RUANG TONTON PRIBADI</p>
+          <h1 id="page-title">Putar video,<br><span>sesukamu.</span></h1>
+          <p class="hero-description">Satu tempat untuk menikmati video YouTube. Pilih cara pemutaran, lalu biarkan layar tetap milikmu.</p>
+        </div>
+        <div class="hero-aside" aria-hidden="true">
+          <span class="hero-aside-line"></span>
+          <span>PLAY YOUR WAY</span>
+          <span class="hero-aside-number">01 <i>/ 03</i></span>
+        </div>
+      </section>
+
+      <div class="workspace-grid">
+        <section class="player-card" aria-labelledby="player-heading">
+          <div class="player-card-heading">
+            <div class="section-title-wrap">
+              <span class="section-symbol" aria-hidden="true"><span></span></span>
+              <div>
+                <h2 id="player-heading">PEMUTAR VIDEO</h2>
+                <p>YOUTUBE IFRAME PLAYER</p>
+              </div>
+            </div>
+            <div id="playback-status" class="status-pill" data-state="ready" role="status" aria-live="polite">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span id="status-text">Siap</span>
+            </div>
+          </div>
+
+          <div id="player-frame" class="player-frame">
+            <div id="player-placeholder" class="player-placeholder">
+              <div class="placeholder-orbit placeholder-orbit-one" aria-hidden="true"></div>
+              <div class="placeholder-orbit placeholder-orbit-two" aria-hidden="true"></div>
+              <div class="placeholder-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><path d="M8.5 5.7a1 1 0 0 1 1.5-.86l9 5.2a1 1 0 0 1 0 1.73l-9 5.2a1 1 0 0 1-1.5-.87V5.7Z" fill="currentColor"/></svg>
+              </div>
+              <p class="placeholder-kicker">RUANG TONTON ANDA</p>
+              <h3>Video dimulai di sini</h3>
+              <p class="placeholder-copy">Masukkan tautan YouTube untuk memuat video pilihanmu.</p>
+              <span class="ratio-tag">16:9 <b aria-hidden="true">·</b> RESPONSIF</span>
+            </div>
+            <div id="player-target" title="Pemutar video YouTube"></div>
+          </div>
+
+          <div class="video-details">
+            <div class="video-metadata">
+              <p id="video-title" class="video-title">Belum ada video dipilih</p>
+              <p id="video-subtitle" class="video-subtitle">Tempelkan tautan YouTube untuk memulai.</p>
+            </div>
+            <a id="youtube-link" class="youtube-link" href="#" target="_blank" rel="noopener noreferrer" hidden>
+              <span>Di YouTube</span>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M11 3.75h5.25V9M16 4l-7.5 7.5M14.25 11v4.25A1.5 1.5 0 0 1 12.75 16.75h-7.5a1.5 1.5 0 0 1-1.5-1.5v-7.5a1.5 1.5 0 0 1 1.5-1.5H9.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+
+          <div id="player-message" class="player-message" role="status" aria-live="polite" hidden>
+            <span class="message-mark" aria-hidden="true">!</span>
+            <span id="message-text"></span>
+          </div>
+
+          <div class="control-row" aria-label="Kontrol pemutaran video">
+            <div class="transport-controls">
+              <button id="play-toggle" class="button button-primary" type="button" disabled aria-label="Putar video">
+                <svg class="button-icon icon-play" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M6.75 4.9a.8.8 0 0 1 1.2-.69l8.15 4.7a1.25 1.25 0 0 1 0 2.17l-8.15 4.7a.8.8 0 0 1-1.2-.69V4.9Z" fill="currentColor"/></svg>
+                <svg class="button-icon icon-pause" viewBox="0 0 20 20" aria-hidden="true" focusable="false" hidden><path d="M5.5 4.5h3v11h-3zM11.5 4.5h3v11h-3z" fill="currentColor"/></svg>
+                <span id="play-toggle-label">Putar</span>
+              </button>
+              <button id="restart-button" class="button button-secondary" type="button" disabled title="Mulai video dari awal">
+                <svg class="button-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 7.5V3.75M4.5 7.5h3.75M4.75 7.25a6.25 6.25 0 1 1-1 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Mulai dari awal</span>
+              </button>
+              <button id="reset-button" class="button button-quiet" type="button" disabled title="Hentikan dan reset ke awal">
+                <svg class="button-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="5.25" y="5.25" width="9.5" height="9.5" rx="1.5" fill="currentColor"/></svg>
+                <span>Reset</span>
+              </button>
+              <button id="replay-button" class="button button-replay" type="button" hidden>
+                <svg class="button-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.5 7.5V3.75M4.5 7.5h3.75M4.75 7.25a6.25 6.25 0 1 1-1 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Putar ulang</span>
+              </button>
+            </div>
+
+            <div class="utility-controls">
+              <button id="mute-button" class="icon-button" type="button" disabled aria-label="Matikan suara" aria-pressed="false" title="Matikan suara">
+                <svg class="volume-on-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 8v4h3l4 3.25v-10.5L6 8H3Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M13 7.1a4.1 4.1 0 0 1 0 5.8M15.25 4.9a7.2 7.2 0 0 1 0 10.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <svg class="volume-off-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false" hidden><path d="M3 8v4h3l4 3.25v-10.5L6 8H3ZM13 8l4 4M17 8l-4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <label class="volume-range-wrap" for="volume-control">
+                <span class="sr-only">Volume</span>
+                <input id="volume-control" type="range" min="0" max="100" value="80" step="1" disabled aria-label="Volume">
+              </label>
+              <button id="fullscreen-button" class="icon-button" type="button" disabled aria-label="Tampilkan layar penuh" title="Layar penuh">
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7.25 3.75H4.75a1 1 0 0 0-1 1v2.5M12.75 3.75h2.5a1 1 0 0 1 1 1v2.5M16.25 12.75v2.5a1 1 0 0 1-1 1h-2.5M7.25 16.25h-2.5a1 1 0 0 1-1-1v-2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="control-caption">
+            <span id="volume-caption">Volume 80%</span>
+            <span>Kontrol YouTube juga tersedia di dalam pemutar</span>
+          </div>
+        </section>
+
+        <aside class="settings-card" aria-labelledby="settings-heading">
+          <div class="settings-heading">
+            <div>
+              <p class="eyebrow settings-eyebrow">SESI BARU</p>
+              <h2 id="settings-heading">Atur pemutaran</h2>
+            </div>
+            <span class="settings-number" aria-hidden="true">01</span>
+          </div>
+
+          <form id="video-form" novalidate>
+            <label class="field-label" for="youtube-url">URL video YouTube</label>
+            <div class="input-row">
+              <div class="input-shell">
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M8.1 11.9a3 3 0 0 0 4.25 0l3-3a3 3 0 0 0-4.25-4.25l-1.5 1.5M11.9 8.1a3 3 0 0 0-4.25 0l-3 3a3 3 0 0 0 4.25 4.25l1.5-1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <input id="youtube-url" name="youtube-url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="https://youtube.com/watch?v=…" aria-describedby="input-help input-error">
+              </div>
+              <button id="load-button" class="load-button" type="submit">
+                <span>Muat</span>
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10h11M10.5 5.5 15 10l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <p id="input-error" class="input-error" aria-live="polite" hidden></p>
+            <p id="input-help" class="field-help">Mendukung youtube.com, youtu.be, dan tautan embed.</p>
+          </form>
+
+          <fieldset class="mode-fieldset">
+            <legend>Mode pemutaran</legend>
+            <div class="mode-list">
+              <label class="mode-option">
+                <input type="radio" name="playback-mode" value="once">
+                <span class="mode-card">
+                  <span class="mode-radio" aria-hidden="true"></span>
+                  <span class="mode-copy"><strong>Putar sekali</strong><small>Berhenti saat selesai</small></span>
+                  <span class="mode-index" aria-hidden="true">01</span>
+                </span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="playback-mode" value="loop">
+                <span class="mode-card">
+                  <span class="mode-radio" aria-hidden="true"></span>
+                  <span class="mode-copy"><strong>Loop</strong><small>Ulangi otomatis dari awal</small></span>
+                  <span class="mode-index" aria-hidden="true">02</span>
+                </span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="playback-mode" value="manual">
+                <span class="mode-card">
+                  <span class="mode-radio" aria-hidden="true"></span>
+                  <span class="mode-copy"><strong>Putar ulang manual</strong><small>Kamu yang mulai lagi</small></span>
+                  <span class="mode-index" aria-hidden="true">03</span>
+                </span>
+              </label>
+            </div>
+            <p id="mode-description" class="mode-description">Video diputar satu kali, lalu berhenti. Tidak ada pemutaran ulang otomatis.</p>
+          </fieldset>
+
+          <div class="autoplay-note">
+            <span class="note-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" focusable="false"><path d="M10 2.75 17 6v4.6c0 3.25-2.25 5.45-7 6.65-4.75-1.2-7-3.4-7-6.65V6l7-3.25Z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/><path d="m7.2 9.8 1.8 1.8 3.8-4" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <p><strong>Tanpa autoplay paksa</strong><span>Tekan Putar saat siap. Browser dapat membatasi pemutaran otomatis.</span></p>
+          </div>
+
+          <div class="settings-footnote">
+            <span class="footnote-line" aria-hidden="true"></span>
+            <span>Video diputar langsung melalui YouTube.</span>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="page-footer">
+        <span><span class="footer-mark">v.</span> VIDORA PLAYER</span>
+        <span>Pemutaran, hak, dan kontrol video tetap berada di YouTube.</span>
+      </footer>
+    </main>
+  </div>
+
+  <noscript><div class="noscript-message">Aktifkan JavaScript di browser untuk menggunakan pemutar video.</div></noscript>
+</body>
+</html>
